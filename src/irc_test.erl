@@ -14,6 +14,9 @@ start() ->
 
 init(State) ->
   lager:info("Init IRC test"),
+  {ok, Socket} = gen_tcp:connect("irc.freenode.net", 6667, [binary, {active,true}]),
+  gen_tcp:send(Socket, "NICK artgon_1\r\n"),
+  gen_tcp:send(Socket, "USER artgon_1 8 * : Arty G\r\n"),
   {ok, State}.
 
 code_change(_OldVersion, State, _Extra) -> {ok, State}.
@@ -26,8 +29,13 @@ handle_cast(Req, State) ->
   lager:info("Cast IRC test"),
   {noreply, State}.
 
+handle_info({tcp, _, Stuff}, State) ->
+  lager:info("~p", [Stuff]),
+  {noreply, State};
+
 handle_info(Req, State) -> 
   lager:info("Info IRC test"),
+  lager:info("Unkown message: ~w~n", [Req]),
   {noreply, State}.
 
 terminate(_Reason, _State) -> 

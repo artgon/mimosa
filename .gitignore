@@ -4,3 +4,4 @@ deps
 /log
 Mnesia*
 erl_crash.dump
+*.beam
